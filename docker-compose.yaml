@@ -6,8 +6,6 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile.terraform
-      args:
-        version: 0.12.24
     env_file: .env
     volumes:
       - .:/code
@@ -15,7 +13,11 @@ services:
     working_dir: /code
 
   aws:
-    image: amazon/aws-cli:2.0.8
+    build: 
+      context: .
+      dockerfile: Dockerfile.aws_3m
     env_file: .env
     volumes:
-    - ~/.aws:/root/.aws
+      - .:/code
+      - ~/.aws:/root/.aws
+    working_dir: /code
