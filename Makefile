@@ -13,16 +13,22 @@ ENVIRONMENT?=dev
 
 prepare:
 	docker-compose build
+	$(MAKE) terraform_init
 
 terraform_backend: 
 	-$(DOCKER_COMPOSE_RUN_AWS) s3 mb s3://${TERRAFORM_STATE_BUCKET}
 
-deploy: network
-undeploy: network_undeploy
+deploy: validate network
 
-network: .env network_init network_deploy
-network_init: .env 
-	$(DOCKER_COMPOSE_RUN_TERRAFORM) make _network_init
+undeploy: validate network_undeploy
+
+validate:
+	$(DOCKER_COMPOSE_RUN_TERRAFORM) terraform validate terraform/
+
+network: .env terraform_init network_deploy
+
+terraform_init: .env 
+	$(DOCKER_COMPOSE_RUN_TERRAFORM) make _terraform_init
 network_deploy:
 		$(DOCKER_COMPOSE_RUN_TERRAFORM) make _network_deploy
 network_undeploy:
@@ -37,7 +43,7 @@ clean:
 	git clean -fxd
 	rm -rf output/
 
-_network_init:
+_terraform_init:
 	sh scripts/terraform_init.sh
 
 _network_deploy:
