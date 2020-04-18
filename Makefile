@@ -17,10 +17,25 @@ prepare:
 terraform_backend: 
 	-$(DOCKER_COMPOSE_RUN_AWS) s3 mb s3://${TERRAFORM_STATE_BUCKET}
 
-network: .env network_init network_deploy
+deploy: network
+undeploy: network_undeploy
 
+network: .env network_init network_deploy
 network_init: .env 
 	$(DOCKER_COMPOSE_RUN_TERRAFORM) make _network_init
+network_deploy:
+		$(DOCKER_COMPOSE_RUN_TERRAFORM) make _network_deploy
+network_undeploy:
+	$(DOCKER_COMPOSE_RUN_TERRAFORM) make _network_undeploy
+
+shellTerraform:
+	docker-compose run --rm terraform
+shellAWS:
+	docker-compose run --rm --entrypoint bash aws
+
+clean:
+	git clean -fxd
+	rm -rf output/
 
 _network_init:
 	sh scripts/terraform_init.sh
@@ -28,15 +43,5 @@ _network_init:
 _network_deploy:
 	sh scripts/network_deploy.sh
 
-network_deploy:
-		$(DOCKER_COMPOSE_RUN_TERRAFORM) make _network_deploy
-
-shellTerraform:
-	docker-compose run --rm terraform
-
-shellAWS:
-	docker-compose run --rm --entrypoint bash aws
-
-clean:
-	git clean -fxd
-	rm -rf output/
+_network_undeploy:
+	sh scripts/network_undeploy.sh
