@@ -1,0 +1,9 @@
+
+ARG version=0.12.24
+
+FROM hashicorp/terraform:${version}
+
+RUN apk update && apk add make
+
+ENTRYPOINT []
+CMD [ "sh" ]
