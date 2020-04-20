@@ -4,8 +4,7 @@ terraform {
     # configured with init parameters using env vars
 
     workspaces {
-      name = "network"
+      name = "data"
     }
   }
-
 }

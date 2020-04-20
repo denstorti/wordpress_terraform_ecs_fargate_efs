@@ -40,3 +40,24 @@ resource "aws_subnet" "public-subnet2" {
     Name = "${var.project_name}-public-sub2"
   }
 }
+
+resource "aws_ssm_parameter" "vpc_id" {
+  name        = "/${var.environment}/network/vpc_id"
+  description = "VPC ID"
+  type  = "String"
+  value = aws_vpc.main.id
+}
+
+resource "aws_ssm_parameter" "private_subnets_id" {
+  name        = "/${var.environment}/network/subnets/private"
+  description = "Private subnet IDs"
+  type  = "StringList"
+  value = "${aws_subnet.private-subnet1.id}, ${aws_subnet.private-subnet2.id}"
+}
+
+resource "aws_ssm_parameter" "public_subnets_id" {
+  name        = "/${var.environment}/network/subnets/public"
+  description = "Public subnet IDs"
+  type  = "StringList"
+  value = "${aws_subnet.public-subnet1.id}, ${aws_subnet.public-subnet2.id}"
+}
