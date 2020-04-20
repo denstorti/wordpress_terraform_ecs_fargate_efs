@@ -37,10 +37,7 @@ TERRAFORM_IMAGE = terraform_3m
 
 all: prepare deploy_network deploy_data
 
-prepare:  
-	$(MAKE) .env
-	$(MAKE) terraform_init
-	$(MAKE) terraform_backend
+prepare: .env terraform_backend terraform_init
 
 build:
 	GIT_SHA=$(shell git rev-parse --short HEAD)
@@ -77,15 +74,13 @@ push:
 
 terraform_init: .env 
 	$(DOCKER_COMPOSE_RUN_TERRAFORM) make _terraform_init
-terraform_switch_data: .env 
+terraform_switch_data:
 	$(DOCKER_COMPOSE_RUN_TERRAFORM) make _terraform_switch_data
 terraform_switch_network:
 	$(DOCKER_COMPOSE_RUN_TERRAFORM) make _terraform_switch_network
 
 terraform_refresh:
 		$(DOCKER_COMPOSE_RUN_TERRAFORM) make _terraform_refresh
-_terraform_refresh:
-		sh terraform refresh terraform/
 
 shellTerraform:
 	docker-compose run --rm terraform
@@ -95,6 +90,9 @@ shellAWS:
 clean:
 	git clean -fxd
 	rm -rf output/
+
+_terraform_refresh:
+		sh terraform refresh terraform/
 
 _terraform_init:
 	sh scripts/terraform_init.sh
