@@ -1,21 +1,10 @@
 
-data "aws_ssm_parameter" "db_user" {
-  name = "/${var.environment}/database/user"
+
+module "parameters" {
+  source        = "./modules/parameters"
+  project_name  = var.project_name
+  environment = var.environment
 }
-
-data "aws_ssm_parameter" "db_password" {
-  name = "/${var.environment}/database/password"
-}
-
-
-resource "aws_ssm_parameter" "test" {
-  name        = "/${var.environment}/database/test"
-  description = "DB user"
-  type  = "String"
-  value = "temp"
-  overwrite = true
-}
-
 
 data "aws_ssm_parameter" "vpc_id" {
   name = "/${var.environment}/network/vpc_id"

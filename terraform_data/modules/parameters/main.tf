@@ -8,8 +8,12 @@ resource "aws_ssm_parameter" "db_user" {
   name        = "/${var.environment}/database/user"
   description = "DB user"
   type  = "String"
-  value = "temp"
-  overwrite = true
+  value = "admin"
+  lifecycle {
+    ignore_changes = [
+      value,
+    ]
+  }
 }
 
 resource "aws_ssm_parameter" "db_pass" {
@@ -20,5 +24,10 @@ resource "aws_ssm_parameter" "db_pass" {
   tags = {
     environment = "${var.environment}"
   }
-  overwrite = true
+  
+  lifecycle {
+    ignore_changes = [
+      value,
+    ]
+  }
 }

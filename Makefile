@@ -21,7 +21,6 @@ TF_VAR_bucket_tf_state=${TERRAFORM_STATE_BUCKET}
 
 TF_VAR_db_name=${DB_NAME}
 TF_VAR_db_user=${DB_USER}
-# TF_VAR_db_password=${DB_PASSWORD}
 
 AWS_IMAGE = aws_3m
 TERRAFORM_IMAGE = terraform_3m
