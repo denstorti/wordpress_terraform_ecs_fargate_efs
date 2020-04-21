@@ -7,12 +7,15 @@ Wordpress running on AWS ECS, Fargate and EFS. Infra as Code in Terraform.
   - Manage S3 buckets
   - Manage resources in this solution (ECS, ECR, VPC, S3, EFS, etc)
 
-## Run it
+## Deploying it to AWS
 
 - Set your bucket name in `TERRAFORM_STATE_BUCKET`
 - Set your ECR url `ECR_REPO`
 - Set it up: `make prepare`
 - Deploy: `make deploy`
+
+## Pushing images to ECR
+- `make build push` 
 
 ## Clean it up
 - `make undeploy`

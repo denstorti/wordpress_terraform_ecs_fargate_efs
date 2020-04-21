@@ -8,9 +8,6 @@ PROJECT_NAME ?= project01
 APPLICATION ?= wordpress
 TERRAFORM_STATE_BUCKET ?= terraform-state-denis
 
-#To do: remove this and fetch from SSM Parameter store
-ECR_REPO ?= 281387974444.dkr.ecr.ap-southeast-2.amazonaws.com
-
 DB_NAME ?= ${APPLICATION}
 
 COMPOSE_PROJECT_NAME = ${PROJECT_NAME}
@@ -24,6 +21,8 @@ TF_VAR_db_user=${DB_USER}
 
 AWS_IMAGE = aws_3m
 TERRAFORM_IMAGE = terraform_3m
+WORDPRESS_IMAGE = wordpress
+GIT_SHA = git rev-parse --short HEAD
 
 .PHONY: .env
 .EXPORT_ALL_VARIABLES: 
@@ -39,9 +38,12 @@ all: prepare deploy_network deploy_data
 prepare: .env terraform_backend terraform_init
 
 build:
-	GIT_SHA=$(shell git rev-parse --short HEAD)
-	docker build -f Dockerfile.aws_3m -t ${AWS_IMAGE}:${GIT_SHA} .
-	docker build -f Dockerfile.terraform -t ${TERRAFORM_IMAGE}:${GIT_SHA} .
+	docker build -f Dockerfile.aws_3m -t ${AWS_IMAGE}:$(shell ${GIT_SHA}) .
+	docker build -f Dockerfile.terraform -t ${TERRAFORM_IMAGE}:$(shell ${GIT_SHA}) .
+	docker build -f Dockerfile.wordpress -t ${WORDPRESS_IMAGE}:$(shell ${GIT_SHA}) .
+
+push:   # requires AWS and Docker
+	bash scripts/push.sh
 
 terraform_backend: .env
 	$(DOCKER_COMPOSE_RUN_AWS) make _terraform_backend
@@ -67,9 +69,6 @@ validate_network:
 
 validate_data:
 	$(DOCKER_COMPOSE_RUN_TERRAFORM) terraform validate terraform_data/
-
-push:
-	bash scripts/push.sh
 
 terraform_init: .env 
 	$(DOCKER_COMPOSE_RUN_TERRAFORM) make _terraform_init

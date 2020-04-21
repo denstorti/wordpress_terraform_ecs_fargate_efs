@@ -1,11 +1,20 @@
 set -e
 set -x
 
-TOKEN=$(aws ecr get-login-password --region ap-southeast-2)
-docker login --username AWS --password ${TOKEN} ${ECR_REPO}/${AWS_IMAGE}
-docker tag ${AWS_IMAGE}:${GIT_SHA} ${ECR_REPO}/${AWS_IMAGE}:${GIT_SHA}
-docker push ${ECR_REPO}/${AWS_IMAGE}:${GIT_SHA}
+SHA=$(${GIT_SHA})
 
-aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin ${ECR_REPO}/${TERRAFORM_IMAGE}
-docker tag ${TERRAFORM_IMAGE}:${GIT_SHA} ${ECR_REPO}/${TERRAFORM_IMAGE}:${GIT_SHA}
-docker push ${ECR_REPO}/${TERRAFORM_IMAGE}:${GIT_SHA}
+TERRAFORM_REPO=$(aws ssm get-parameter --name /${ENVIRONMENT}/ecr/${TERRAFORM_IMAGE} --query Parameter.Value | tr -d "\"")
+AWS_REPO=$(aws ssm get-parameter --name /${ENVIRONMENT}/ecr/${AWS_IMAGE} --query Parameter.Value | tr -d "\"")
+WORDPRESS_REPO=$(aws ssm get-parameter --name /${ENVIRONMENT}/ecr/${WORDPRESS_IMAGE} --query Parameter.Value | tr -d "\"")
+
+aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin ${AWS_REPO}
+docker tag ${AWS_IMAGE}:${SHA} ${AWS_REPO}:${SHA}
+docker push ${AWS_REPO}:${SHA}
+
+aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin ${TERRAFORM_REPO}
+docker tag ${TERRAFORM_IMAGE}:${SHA} ${TERRAFORM_REPO}:${SHA}
+docker push ${TERRAFORM_REPO}:${SHA}
+
+aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin ${WORDPRESS_REPO}
+docker tag ${WORDPRESS_IMAGE}:${SHA} ${WORDPRESS_REPO}:${SHA}
+docker push ${WORDPRESS_REPO}:${SHA}
