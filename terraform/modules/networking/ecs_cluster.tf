@@ -80,6 +80,7 @@ resource "aws_ecs_task_definition" "wordpress" {
   container_definitions = file("task-definitions/wordpress.json")
   requires_compatibilities = ["FARGATE"]
   network_mode = "awsvpc"
+  task_role_arn = aws_iam_role.ecs_tasks_execution_role.arn
   cpu   =  256
   memory = 512
   execution_role_arn = aws_iam_role.ecs_tasks_execution_role.arn
@@ -135,4 +136,26 @@ resource "aws_iam_role" "ecs_tasks_execution_role" {
 resource "aws_iam_role_policy_attachment" "ecs_tasks_execution_role" {
   role       = aws_iam_role.ecs_tasks_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+resource "aws_iam_role_policy" "ssm_read" {
+  name = "SSMReadPermission"
+  role = aws_iam_role.ecs_tasks_execution_role.id
+
+  policy = <<-EOF
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": [
+            "ssm:DescribeParameters",
+            "ssm:GetParameters",
+            "ssm:GetParameter"
+        ],
+        "Resource": "*"
+      }
+    ]
+  }
+  EOF
 }

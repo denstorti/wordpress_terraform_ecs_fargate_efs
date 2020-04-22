@@ -3,6 +3,24 @@
     "name": "wordpress",
 		"image": "281387974444.dkr.ecr.ap-southeast-2.amazonaws.com/wordpress:a91b14f",
     "essential": true,
+    "secrets": [
+      {
+          "name": "WORDPRESS_DB_USER",
+          "valueFrom": "arn:aws:ssm:ap-southeast-2:281387974444:parameter/dev/database/user"
+      },
+      {
+        "name": "WORDPRESS_DB_PASSWORD",
+        "valueFrom": "arn:aws:ssm:ap-southeast-2:281387974444:parameter/dev/database/password"
+      },
+      {
+        "name": "WORDPRESS_DB_HOST",
+        "valueFrom": "arn:aws:ssm:ap-southeast-2:281387974444:parameter/dev/database/host"
+      },
+      {
+        "name": "WORDPRESS_DB_NAME",
+        "valueFrom": "arn:aws:ssm:ap-southeast-2:281387974444:parameter/dev/database/name"
+      }
+    ],
     "portMappings": [
       {
         "containerPort": 80,

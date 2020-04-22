@@ -52,3 +52,38 @@ resource "aws_db_subnet_group" "db_private_subnet" {
     Name = "${var.project_name}-db-subnet"
   }
 }
+
+
+resource "aws_ssm_parameter" "db_host" {
+  name        = "/${var.environment}/database/host"
+  description = "DB host endpoint with port"
+  type        = "String"
+  value = "${aws_rds_cluster.default.endpoint}:${aws_rds_cluster.default.port}"
+  tags = {
+    Environment = "${var.environment}"
+    Project = "${var.project_name}"
+  }
+  
+  lifecycle {
+    ignore_changes = [
+      value,
+    ]
+  }
+}
+
+resource "aws_ssm_parameter" "db_name" {
+  name        = "/${var.environment}/database/name"
+  description = "DB name"
+  type        = "String"
+  value = aws_rds_cluster.default.database_name
+  tags = {
+    Environment = "${var.environment}"
+    Project = "${var.project_name}"
+  }
+  
+  lifecycle {
+    ignore_changes = [
+      value,
+    ]
+  }
+}
