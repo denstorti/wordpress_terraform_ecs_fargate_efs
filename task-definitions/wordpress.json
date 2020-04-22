@@ -1,0 +1,13 @@
+[
+  {
+    "name": "wordpress",
+		"image": "281387974444.dkr.ecr.ap-southeast-2.amazonaws.com/wordpress:a91b14f",
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": 80,
+        "hostPort": 80
+      }
+    ]
+  }
+]

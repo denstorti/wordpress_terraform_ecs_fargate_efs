@@ -1,11 +1,12 @@
-# wordpress_terraform_ecs_fargate_efs
+# Wordpress - Deployed using Terraform on AWS ECS (orchestration), Fargate (computing), EFS (storage)
 Wordpress running on AWS ECS, Fargate and EFS. Infra as Code in Terraform.
 
-
 ## Prerequisites
+
 - AWS_PROFILE set with valid credentials with permissions for:
   - Manage S3 buckets
   - Manage resources in this solution (ECS, ECR, VPC, S3, EFS, etc)
+- Git CLI
 
 ## Deploying it to AWS
 
@@ -14,7 +15,7 @@ Wordpress running on AWS ECS, Fargate and EFS. Infra as Code in Terraform.
 - Set it up: `make prepare`
 - Deploy: `make deploy`
 
-## Pushing images to ECR
+## Pushing images to ECR (requires Git, AWS and Docker)
 - `make build push` 
 
 ## Clean it up

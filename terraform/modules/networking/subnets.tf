@@ -2,6 +2,7 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
+# TODO: refactor this to use interpolation
 resource "aws_subnet" "private-subnet1" {
   vpc_id     = aws_vpc.main.id
   cidr_block = "173.0.1.0/24"

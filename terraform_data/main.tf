@@ -10,8 +10,8 @@ data "aws_ssm_parameter" "vpc_id" {
   name = "/${var.environment}/network/vpc_id"
 }
 
-data "aws_ssm_parameter" "private_subnets" {
-  name = "/${var.environment}/network/subnets/private"
+data "aws_ssm_parameter" "public_subnets" {
+  name = "/${var.environment}/network/subnets/public"
 }
 
 module "data" {
@@ -22,7 +22,7 @@ module "data" {
   db_name  = var.db_name
   db_user  = module.parameters.db_user
   db_password  = module.parameters.db_password
-  subnets  = data.aws_ssm_parameter.private_subnets.value
+  subnets  = data.aws_ssm_parameter.public_subnets.value
   vpc_id  = data.aws_ssm_parameter.vpc_id.value
 }
 

@@ -42,7 +42,7 @@ build:
 	docker build -f Dockerfile.terraform -t ${TERRAFORM_IMAGE}:$(shell ${GIT_SHA}) .
 	docker build -f Dockerfile.wordpress -t ${WORDPRESS_IMAGE}:$(shell ${GIT_SHA}) .
 
-push:   # requires AWS and Docker
+push:   # requires Git, AWS and Docker
 	bash scripts/push.sh
 
 terraform_backend: .env
