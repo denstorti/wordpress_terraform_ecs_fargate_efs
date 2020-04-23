@@ -1,6 +1,10 @@
 resource "aws_ecs_cluster" "main" {
   name = "${var.project_name}-${var.environment}-ecs-cluster"
   capacity_providers = ["FARGATE"]
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
 }
 
 resource "aws_ecs_service" "wordpress" {
@@ -52,7 +56,7 @@ resource "aws_lb" "wordpress" {
   name               = "${var.project_name}-${var.environment}-wordpress-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = ["${aws_default_security_group.allow_public_tcp80.id}"]
+  security_groups    = [aws_default_security_group.allow_public_tcp80.id]
   subnets            = [aws_subnet.public-subnet1.id, aws_subnet.public-subnet2.id]
 
   enable_deletion_protection = true
@@ -84,6 +88,15 @@ resource "aws_ecs_task_definition" "wordpress" {
   cpu   =  256
   memory = 512
   execution_role_arn = aws_iam_role.ecs_tasks_execution_role.arn
+
+  volume {
+    name = "service-storage1"
+
+    efs_volume_configuration {
+      file_system_id  = aws_efs_file_system.main.id
+      root_directory = "/"
+    }
+  }
 }
 
 resource "aws_default_security_group" "allow_public_tcp80" {
@@ -114,6 +127,8 @@ resource "aws_default_security_group" "allow_public_tcp80" {
 
   tags = {
     Name = "${var.project_name}-web-sg"
+    Environment = var.environment
+    Project = var.project_name
   }
 }
 

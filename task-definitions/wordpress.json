@@ -26,6 +26,13 @@
         "containerPort": 80,
         "hostPort": 80
       }
+    ],
+    "mountPoints": [
+      {
+        "sourceVolume": "service-storage1",
+        "containerPath": "/var/www/html",
+        "readOnly": false
+      }
     ]
   }
 ]
