@@ -84,6 +84,9 @@ shellTerraform:
 	docker-compose run --rm terraform
 shellAWS:
 	docker-compose run --rm --entrypoint bash aws
+shellWP:
+	docker-compose run --rm --entrypoint bash wordpress
+
 
 clean:
 	git clean -fxd

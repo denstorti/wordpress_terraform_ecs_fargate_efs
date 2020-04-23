@@ -21,3 +21,12 @@ services:
       - .:/code
       - ~/.aws:/root/.aws
     working_dir: /code
+
+  wordpress:
+    build: 
+      context: .
+      dockerfile: Dockerfile.wordpress
+    env_file: .env
+    volumes:
+      - .:/code
+    working_dir: /code
