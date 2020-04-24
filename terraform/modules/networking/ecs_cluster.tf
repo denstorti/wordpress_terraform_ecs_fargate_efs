@@ -90,7 +90,7 @@ resource "aws_ecs_task_definition" "wordpress" {
   execution_role_arn = aws_iam_role.ecs_tasks_execution_role.arn
 
   volume {
-    name = "service-storage1"
+    name = "efs-storage-wordpress"
 
     efs_volume_configuration {
       file_system_id  = aws_efs_file_system.main.id

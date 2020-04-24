@@ -29,10 +29,18 @@
     ],
     "mountPoints": [
       {
-        "sourceVolume": "service-storage1",
+        "sourceVolume": "efs-storage-wordpress",
         "containerPath": "/var/www/html",
         "readOnly": false
       }
-    ]
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "/ecs/project01-dev-wordpress",
+        "awslogs-region": "ap-southeast-2",
+        "awslogs-stream-prefix": "ecs"
+      }
+    }
   }
 ]
